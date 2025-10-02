@@ -45,7 +45,7 @@ library(palmerpenguins)
 penguins <- palmerpenguins::penguins
 ```
 
-## Penguin depth vs length
+# Penguin bill depth vs length
 
 ```{r}
 #| echo: false
@@ -53,55 +53,19 @@ plot(x = penguins$bill_length_mm,
 y = penguins$bill_depth_mm)
 
 ```
+#Penguin mean and median body mass
 
-# Sampling from the Cauchy distribution
+```{r}
+#| results: hold
+mean(penguins$body_mass_g, na.rm = TRUE)
+median(penguins$body_mass_g, na.rm = TRUE)
+```
+# How many penguins are there in each island?
 
-In this question we seek to generate samples from the standard Cauchy distribution, with pdf given by
-\begin{equation}
-  p(x) = \frac{1}{\pi (1 + x^2)}, \quad x \in \mathbb{R}.
-  (\#eq:1)
-\end{equation}
-The cdf associated with \@ref(eq:1) is given by
-\begin{equation}
-  F(x) = \frac{1}{\pi}\arctan(x) + \frac{1}{2}.
-  (\#eq:2)
-\end{equation}
 
-**Part a.**  We apply the inversion method as described by @graham2013stochastic. We first compute the generalised inverse of the cdf \@ref(eq:2).  To this end, let $y\in [0,1]$, then
-
-\begin{align}
-    y &= F(x), \quad \iff (\#eq:3a) \\
-    y &= \frac{1}{\pi}\arctan(x) + \frac{1}{2} \quad \iff \\
-    y-\frac{1}{2}  &= \frac{1}{\pi}\arctan(x)  \quad \iff \\
-    \pi\left(y-\frac{1}{2}\right)  &= \arctan(x)  \quad \iff \\
-    x &= \tan\left(\pi\left(y-\frac{1}{2}\right)\right). 
-\end{align}
-
-By the inversion method [@graham2013stochastic], if $Y \sim U[0,1]$, then 
-
-\begin{equation}
-  X = \tan\left(\pi\left(Y-\frac{1}{2}\right)\right),
-  (\#eq:4)
-\end{equation}
-
-```{r, echo=FALSE}
-
-### Question 1a
-
-generate_cauchy_samples <- function(n) {
-  # Generate 'n' uniform random numbers between 0 and 1
-  u <- runif(n)
-  
-  # Apply the inverse CDF formula to get Cauchy samples
-  samples <- tan(pi * (u - 0.5))  
-  return(samples)
-}
-
-num_samples = 1000
-
-# Generate samples from the standard Cauchy distribution
-cauchy_samples <- generate_cauchy_samples(num_samples)
-
+```{r}
+island_counts <- table(penguins$island)
+knitr::kable(island_counts, col.names = c("Island", "Number of penguins"))
 ```
 
 
@@ -159,13 +123,13 @@ df <- data.frame(x = c(0.5, 1.0, 10.0),
                          calculate_ecdf(1.0), 
                          calculate_ecdf(10.0))
                 )
-kbl(df,
-    caption = 'Empirical CDF', 
-    label = 'ecdf',
-    digits = 2) %>%
-  kable_styling(
-    bootstrap_options = c("striped", "hover", "condensed"),
-    font_size = 12)
+#kbl(df,
+ #   caption = 'Empirical CDF', 
+  #  label = 'ecdf',
+   # digits = 2) %>%
+  #kable_styling(
+   # bootstrap_options = c("striped", "hover", "condensed"),
+    #font_size = 12)
 ```
 
 

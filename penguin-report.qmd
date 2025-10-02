@@ -49,11 +49,14 @@ penguins <- palmerpenguins::penguins
 
 ```{r}
 #| echo: false
+#| fig-cap: "Penguin bill depth vs length"
 plot(x = penguins$bill_length_mm,
-y = penguins$bill_depth_mm)
+y = penguins$bill_depth_mm, 
+main = "Penguin bill dimensions",
+sub = "Data source: Palmer Penguins")
 
 ```
-#Penguin mean and median body mass
+# Penguin mean and median body mass
 
 ```{r}
 #| results: hold
@@ -64,82 +67,25 @@ median(penguins$body_mass_g, na.rm = TRUE)
 
 
 ```{r}
+#| label: n_penguins_in_islands
+#| tbl-cap: "Number of penguins in each island"
 island_counts <- table(penguins$island)
 knitr::kable(island_counts, col.names = c("Island", "Number of penguins"))
 ```
 
 
-**Part b.**   The empirical cdf based on $N$ samples $x_1, \ldots, x_N$ is defined to be
-              $$
-                \widehat{F}(t) = \frac{1}{N}\sum_{i = 1}^N \mathbf{1}[x_i \leq t], \quad x\in \mathbb{t}.
-              $$
-To generate the empirical cdf in R, we perform the following steps:
-            
-a. Generate $N$ samples from the distribution using the inversion method, as detailed in the previous question.  
-b. Sort the samples in ascending order $x_1 \leq x_2 \leq x_3 \leq \ldots \leq x_N$.
-c. The empirical CDF at value $x_i$ is given by $i/N$.  
-
-
-In the following figure we plot the empirical cdf based on 1000 samples (black line), and compare against the analytical cdf (red line).  
+# Is the average weight of penguins the same across all three islands?
 
 ```{r echo=FALSE}
-
-### Question 1b
-
-# Sort the samples in ascending order
-sorted_samples <- sort(cauchy_samples)
-
-# Calculate the cumulative probabilities for each sample
-cumulative_probs <- (1:num_samples) / num_samples
-
-x_values <- seq(-100, 100,  length.out = 1000)
-cdf_values <- pcauchy(x_values)
-
-# Plot the empirical CDF
-plot(sorted_samples, 
-     cumulative_probs, 
-     type = "s", 
-     xlab = "x", 
-     ylab = "Empirical CDF", 
-     main = "Empirical CDF of Standard Cauchy Distribution", 
-     lwd = 2, lty = 1, xlim = c(-100,100))
-lines(x_values, cdf_values, type = "l", 
-      xlab = "x", ylab = "CDF", main = "CDF of Standard Cauchy Distribution", 
-      col = 'red', lty = 2)
-```
-
-**Part c.**  We shall use the samples to compute the empirical cdf for the values $x = 0.5, 1, 10$.  
-
-```{r echo=FALSE}
-
-### Question 1c
-
-calculate_ecdf <- function(x) {
-    return(sum(sorted_samples <= x)/num_samples)
-}
-
-df <- data.frame(x = c(0.5, 1.0, 10.0), 
-                ecdf = c(calculate_ecdf(0.5), 
-                         calculate_ecdf(1.0), 
-                         calculate_ecdf(10.0))
-                )
-#kbl(df,
- #   caption = 'Empirical CDF', 
-  #  label = 'ecdf',
-   # digits = 2) %>%
-  #kable_styling(
-   # bootstrap_options = c("striped", "hover", "condensed"),
-    #font_size = 12)
+#| fig-cap: "Penguin body mass by island"
+plot(x = penguins$island, 
+     y = penguins$body_mass_g, 
+     ylab = "Body mass (g)", 
+     xlab = "Island",
+     col(c(6, 3, 4)))
+abline(h = mean(penguins$body_mass_g,na.rm = TRUE), col = 2, lwd = 2)
 ```
 
 
-# Code appendix
-
-Rather than re-paste all the code to the appendix, here is a trick which makes the markdown file output all the code (without) execution in the appendix, without any duplication.
-
-Please keep in mind to format the code so that the entire code is clearly visible and does not run into the margins of the pdf version.  
-
-```{r ref.label=knitr::all_labels(), echo = T, eval = F}
-```
 
 # References
